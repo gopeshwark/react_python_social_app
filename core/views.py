@@ -10,7 +10,10 @@ from .models import *
 
 @login_required(login_url='signin')
 def index(request):
-    return render(request, 'index.html')
+    user = User.objects.get(username=request.user.username)
+    print(user)
+    user_profile = Profile.objects.get(user=user)
+    return render(request, 'index.html', {'user_profile': user_profile})
 
 
 @login_required(login_url="signin")
