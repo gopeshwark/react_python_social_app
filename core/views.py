@@ -11,9 +11,10 @@ from .models import *
 @login_required(login_url='signin')
 def index(request):
     user = User.objects.get(username=request.user.username)
-    print(user)
     user_profile = Profile.objects.get(user=user)
-    return render(request, 'index.html', {'user_profile': user_profile})
+
+    posts = Post.objects.all()
+    return render(request, 'index.html', {'user_profile': user_profile, 'posts': posts})
 
 
 @login_required(login_url='signin')
@@ -28,6 +29,11 @@ def upload(request):
         new_post.save()
 
     return redirect("/")
+
+
+@login_required(login_url='signin')
+def like_post(request):
+    pass
 
 
 @login_required(login_url="signin")
