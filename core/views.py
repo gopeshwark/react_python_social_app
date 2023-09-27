@@ -33,7 +33,17 @@ def upload(request):
 
 @login_required(login_url='signin')
 def profile(request, pk):
-    return render(request, 'profile.html')
+    user_obj = User.objects.get(username=pk)
+    user_profile = Profile.objects.get(user=user_obj)
+    user_posts = Post.objects.filter(user=pk)
+    user_post_length = len(user_posts)
+    context = {
+        'user_obj': user_obj,
+        'user_profile': user_profile,
+        'user_posts': user_posts,
+        'user_post_length': user_post_length
+    }
+    return render(request, 'profile.html', context)
 
 
 @login_required(login_url='signin')

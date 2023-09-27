@@ -1084,7 +1084,7 @@ header.sticky {
     right: 43px;
 }
 
-.add-btn > span {
+.add-btn > span, .add-btn > div > span {
     color: #000;
     margin-right: 20px;
     
