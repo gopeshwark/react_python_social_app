@@ -5,6 +5,7 @@ from django.contrib.auth.models import User, auth
 from django.contrib.auth.decorators import login_required
 from .models import *
 from itertools import chain
+import random
 
 # Create your views here.
 
@@ -25,8 +26,39 @@ def index(request):
 
     feed_list = list(chain(*feed))
 
+    # user suggestion
+    all_users = User.objects.all()
+    user_following_all = []
+
+    for user in user_following:
+        user_list = User.objects.get(username=user.user)
+        user_following_all.append(user_list)
+
+    # user_following_all.append(user)
+    current_user = User.objects.filter(username=request.user.username)
+    user_suggestions_list = [x for x in list(
+        all_users) if (x not in list(user_following_all))]
+
+    final_suggestions_list = [x for x in list(
+        user_suggestions_list) if (x not in list(current_user))]
+
+    random.shuffle(final_suggestions_list)
+
+    user_profile_list = []
+
+    for user in final_suggestions_list:
+        profile_list = Profile.objects.filter(id_user=user.id)
+        user_profile_list.append(profile_list)
+
+    suggestion_profile_list = list(chain(*user_profile_list))
+
+    context = {
+        'user_profile': user_profile,
+        'posts': feed_list,
+        'suggestion_profile_list': suggestion_profile_list[:4]
+    }
     # posts = Post.objects.all()
-    return render(request, 'index.html', {'user_profile': user_profile, 'posts': feed_list})
+    return render(request, 'index.html', context)
 
 
 @login_required(login_url='signin')
